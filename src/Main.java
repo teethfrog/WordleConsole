@@ -62,7 +62,7 @@ public class Main {
         do {
             String guess = scanner.nextLine();
             int tries = 5;
-            if (guess.length() !=  5 || !guess.matches("[a-zA-Z]+")) {
+            if (guess.length() !=  5 && !guess.matches("[a-zA-Z]+")) {
                 System.out.println("Invalid input. Please write a 5-letter word that contains only letters.");
                 continue;
             }
