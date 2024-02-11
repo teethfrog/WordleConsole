@@ -24,11 +24,11 @@ public class WordUtils {
         }
     } // Splits the word into an ArrayList for easier comparison
 
-//    public static void getSplitWord(){
-//        for (int i = 0; i < splitWord.size(); i++) {
-//            System.out.println(splitWord.get(i));
-//        }
-//    }
+    public static void getSplitWord(){
+        for (int i = 0; i < splitWord.size(); i++) {
+            System.out.println(splitWord.get(i));
+        }
+    }
 
     public static void setGuess(String guess){
         for (int i = 0; i < guess.length(); i++) {
@@ -45,6 +45,7 @@ public class WordUtils {
     public static String compareWords() {
         ArrayList<String> compResult = new ArrayList<String>();
         ArrayList<Integer> matchedIndices = new ArrayList<Integer>();
+        ArrayList<String> compResultLettered = new ArrayList<String>();
 
         for (int i = 0; i < splitGuess.size(); i++) {
             String currentChar = splitGuess.get(i);
@@ -54,8 +55,10 @@ public class WordUtils {
                 if (!matchedIndices.contains(y) && Objects.equals(currentChar, splitWord.get(y))) {
                     if (i == y) {
                         compResult.add("\u001B[32m" + currentChar + "\u001B[0m");
+                        compResultLettered.add("G");
                     } else {
                         compResult.add("\u001B[33m" + currentChar + "\u001B[0m");
+                        compResultLettered.add("Y");
                     }
                     foundMatch = true;
                     matchedIndices.add(y);
@@ -65,6 +68,7 @@ public class WordUtils {
 
             if (!foundMatch) {
                 compResult.add("\u001B[0m" + currentChar + "\u001B[0m");
+                compResultLettered.add("W");
             }
         }
 
@@ -72,9 +76,24 @@ public class WordUtils {
         for (String result : compResult) {
             compResultS.append(result);
         }
+        StringBuilder compResultLetteredS = new StringBuilder();
+        for (String result : compResultLettered) {
+            compResultLetteredS.append(result);
+        }
 
-        return compResultS.toString();
+
+        return compResultS.toString() + "," + compResultLetteredS.toString();
     } // Compares the word with the guess and returns the result in ANSI color codes
+
+    public static String getWordResults(String result){
+        String[] split = compareWords().split(",");
+        return split[0];
+    }
+
+    public static String getWordResultsLettered(String result){
+        String[] split = compareWords().split(",");
+        return split[1];
+    }
 
     public static String cleanWord(String word) {
         String cleanedWord = word.replaceAll("\u001B\\[.*?m", "");
