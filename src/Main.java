@@ -1,8 +1,10 @@
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -59,30 +61,42 @@ public class Main {
         } while (!choice.equalsIgnoreCase(""));
 
         System.out.println("Write your guess below:");
-        do {
-            String guess = scanner.nextLine();
-            int tries = 5;
-            if (guess.length() !=  5 && !guess.matches("[a-zA-Z]+")) {
-                System.out.println("Invalid input. Please write a 5-letter word that contains only letters.");
-                continue;
-            }
-            do {
-                WordUtils.setGuess(guess);
-                String result = WordUtils.compareWords();
-                System.out.println(result);
-                if (WordUtils.cleanWord(result).equals(WordUtils.getWord())) {
-                    System.out.println("Congratulations! You guessed the word in " + (6 - tries) + " tries!");
-                    break;
+        int tries = 6;
+            ArrayList<String> guessSheet = new ArrayList<String>();
+            while (tries > 0) {
+                String guess = scanner.nextLine();
+                if (!guess.matches("[a-zA-Z]{5}$")) {
+                    System.out.println("Invalid input. Please write a 5-letter word that contains only letters.");
                 } else {
-                    WordUtils.clearCompResult();
-                    tries--;
-                    guess = scanner.nextLine();
+                    WordUtils.setGuess(guess);
+                    String result = WordUtils.compareWords();
+                    String resultLettered = WordUtils.getWordResultsLettered(result);
+                    String resultColored = WordUtils.getWordResults(result);
+                    System.out.println(resultColored);
+                    for (int i = 0; i < resultLettered.length(); i++) {
+                        guessSheet.add(resultLettered.substring(i, i + 1));
+                    }
+                    if (WordUtils.cleanWord(resultColored).equals(WordUtils.getWord())) {
+                        System.out.println("Congratulations! You guessed the word in " + (7 - tries) + " tries!");
+                        ImageHandling.setFileName(new StringBuilder());
+                        ImageHandling.writeImage(ImageHandling.generateImage(guessSheet));
+                        break;
+                    } else {
+                        WordUtils.clearCompResult();
+                        tries--;
+                    }
                 }
-            } while (tries > 0);
+            }
             if (tries == 0) {
                 System.out.println("You lost! The word was " + WordUtils.getWord());
-                break;
-            }
-        } while (true);
+//                for (String s : guessSheet) {
+//                    System.out.print(s);
+//                }
+
+                ImageHandling.setFileName(new StringBuilder());
+                ImageHandling.writeImage(ImageHandling.generateImage(guessSheet));
+        }
     }
 }
+
+//Tack felix :D
